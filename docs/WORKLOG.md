@@ -311,3 +311,20 @@ https://github.com/Fadi-AICH/cyberguard-mlops
 - The first workflow startup run did not create jobs, so the CI workflow was updated with manual `workflow_dispatch`.
 - GitHub Actions installs `.[dev]` for fast CI checks.
 - Local full setup still uses `requirements.txt`, which installs `.[dev,mlops]`.
+- The repository was changed from private to public because private runs startup-failed before job creation.
+- GitHub then started jobs but blocked execution with: `The job was not started because your account is locked due to a billing issue.`
+
+### GitHub Actions Follow-up
+
+After the GitHub account billing issue is fixed, rerun the workflow:
+
+```powershell
+gh workflow run ci.yml --repo Fadi-AICH/cyberguard-mlops
+gh run list --repo Fadi-AICH/cyberguard-mlops --limit 5
+```
+
+Then capture the Actions tab screenshot:
+
+```text
+https://github.com/Fadi-AICH/cyberguard-mlops/actions
+```
