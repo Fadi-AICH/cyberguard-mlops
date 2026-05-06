@@ -284,3 +284,30 @@ Synthetic benign and attack requests were sent to `http://localhost:8000/predict
 ```text
 http://localhost:3000/d/cyberguard-soc/cyberguard-soc-mlops-command-center?orgId=1&from=now-30m&to=now&refresh=5s
 ```
+
+## 2026-05-07 - GitHub Repository Publish
+
+### Commands
+
+```powershell
+winget install --id GitHub.cli --exact --source winget --accept-package-agreements --accept-source-agreements
+gh auth login
+git init
+git branch -M main
+git add -A
+git rm --cached -r src\cyberguard_mlops.egg-info screenshots\desktop.ini
+git commit -m "Build CyberGuard MLOps project"
+gh repo create cyberguard-mlops --private --source . --remote origin --push
+```
+
+### Repository
+
+```text
+https://github.com/Fadi-AICH/cyberguard-mlops
+```
+
+### Notes
+
+- The first workflow startup run did not create jobs, so the CI workflow was updated with manual `workflow_dispatch`.
+- GitHub Actions installs `.[dev]` for fast CI checks.
+- Local full setup still uses `requirements.txt`, which installs `.[dev,mlops]`.
