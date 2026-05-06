@@ -1,0 +1,38 @@
+stages:
+  generate_data:
+    cmd: py -3.11 -m cyberguard_ml.pipeline.generate_data --rows 6000 --seed 42 --attack-rate 0.32
+    deps:
+      - src/cyberguard_ml/pipeline/generate_data.py
+    outs:
+      - data/raw/network_flows.csv
+      - data/processed/reference_window.csv
+      - data/processed/current_window.csv
+  validate_data:
+    cmd: py -3.11 -m cyberguard_ml.pipeline.validate_data
+    deps:
+      - data/raw/network_flows.csv
+      - src/cyberguard_ml/pipeline/validate_data.py
+    outs:
+      - data/processed/network_flows_validated.csv
+    metrics:
+      - reports/data_validation.json
+  train_model:
+    cmd: py -3.11 -m cyberguard_ml.pipeline.train_model
+    deps:
+      - data/processed/network_flows_validated.csv
+      - src/cyberguard_ml/pipeline/train_model.py
+    outs:
+      - models/cyberguard_model.joblib
+      - models/model_card.json
+    metrics:
+      - models/metrics.json
+  drift_report:
+    cmd: py -3.11 -m cyberguard_ml.monitoring.drift_report
+    deps:
+      - data/processed/reference_window.csv
+      - data/processed/current_window.csv
+      - src/cyberguard_ml/monitoring/drift_report.py
+    outs:
+      - reports/drift_report.json:
+          cache: false
+
