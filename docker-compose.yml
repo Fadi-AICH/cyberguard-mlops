@@ -68,6 +68,7 @@ services:
       - "8501:8501"
     environment:
       - CYBERGUARD_PROJECT_ROOT=/app
+      - CYBERGUARD_API_URL=http://api:8000
     volumes:
       - ./data:/app/data:ro
       - ./models:/app/models:ro

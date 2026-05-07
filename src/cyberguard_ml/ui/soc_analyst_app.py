@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import Any, cast
 
 import pandas as pd
@@ -24,7 +25,7 @@ from cyberguard_ml.ui.soc_analyst import (
     top_sources,
 )
 
-DEFAULT_API_URL = "http://localhost:8000"
+DEFAULT_API_URL = os.getenv("CYBERGUARD_API_URL", "http://localhost:8000")
 SEVERITY_COLORS = {
     "critical": "#ef4444",
     "high": "#f59e0b",

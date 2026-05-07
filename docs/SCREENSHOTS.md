@@ -155,3 +155,16 @@ Docker mode:
 ```powershell
 docker compose up -d api soc-ui
 ```
+
+In Docker mode the Streamlit sidebar should show:
+
+```text
+FastAPI endpoint: http://api:8000
+API online
+```
+
+If it shows `http://localhost:8000` while using Docker, recreate the UI container:
+
+```powershell
+docker compose up -d --build soc-ui
+```
