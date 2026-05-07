@@ -459,3 +459,5 @@ Best candidate by F1-score: `gradient_boosting`.
 - Docker API health: `{"status":"ok","model_loaded":"true"}`.
 - Prometheus metrics include `cyberguard_predictions_by_context_total` and `cyberguard_predicted_attacks_by_context_total`.
 - Airflow DAG test finished with state `success`.
+- Pushed commit `efc1126` to GitHub. Latest Actions run `#7` started but completed as `failure` before exposing steps, consistent with the account-level Actions/billing runner block seen earlier.
+- Latest Actions URL: `https://github.com/Fadi-AICH/cyberguard-mlops/actions/runs/25472140055`
