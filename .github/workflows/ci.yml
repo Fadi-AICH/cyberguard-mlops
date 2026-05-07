@@ -26,7 +26,7 @@ jobs:
           mypy src
       - name: Generate pipeline artifacts
         run: |
-          python -m cyberguard_ml.pipeline.generate_data --rows 1200 --seed 42 --attack-rate 0.32
+          python -m cyberguard_ml.pipeline.ingest_ciciot2023 --rows 1200 --page-size 100 --offset 0
           python -m cyberguard_ml.pipeline.validate_data
           python -m cyberguard_ml.pipeline.train_model
       - name: Test

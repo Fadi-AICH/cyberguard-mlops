@@ -58,3 +58,18 @@ services:
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
       - prometheus
+
+  airflow:
+    image: apache/airflow:3.0.6-python3.11
+    container_name: cyberguard-airflow
+    profiles: ["airflow"]
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__API__BASE_URL=http://localhost:8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - ./:/opt/airflow/project
+    command: ["bash", "-lc", "airflow standalone"]

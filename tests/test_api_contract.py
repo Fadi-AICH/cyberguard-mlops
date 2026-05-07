@@ -7,8 +7,8 @@ from cyberguard_ml.schemas.prediction import NetworkFlow
 def test_network_flow_defaults_are_valid() -> None:
     flow = NetworkFlow()
 
-    assert flow.protocol_type == "tcp"
-    assert flow.payload_entropy <= 8
+    assert flow.protocol_type == 6
+    assert flow.time_to_live <= 255
 
 
 def test_risk_level_thresholds() -> None:

@@ -328,3 +328,134 @@ Then capture the Actions tab screenshot:
 ```text
 https://github.com/Fadi-AICH/cyberguard-mlops/actions
 ```
+
+## 2026-05-07 - CICIoT2023 Real Dataset Upgrade
+
+### Dataset Decision
+
+- Replaced the synthetic generator evidence path with a real public cybersecurity dataset sample: CICIoT2023.
+- Official source: `https://www.unb.ca/cic/datasets/iotdataset-2023.html`
+- Reproducible sample mirror/API: `https://huggingface.co/datasets/lacg030175/CIC-IoT-2023`
+- Dataset year: 2023.
+- Use case: binary IoT intrusion detection.
+- Important governance note: `source_country`, `source_ip`, `destination_server`, and `severity` are deterministic SOC enrichment fields for monitoring visuals only. They are not model features.
+
+### Major Changes
+
+- Added CICIoT2023 ingestion with retry and cached-sample fallback.
+- Updated the model feature schema to CICIoT2023 network-flow fields.
+- Updated validation for real numeric ranges, including high packet-size variance values.
+- Added Great Expectations-style suite and validation result artifacts.
+- Added Evidently HTML drift report generation.
+- Registered `CyberGuard-CICIoT2023-Intrusion-Detector` in MLflow Model Registry.
+- Rebuilt Grafana as `CyberGuard CICIoT2023 SOC Command Center`.
+- Added SOC dashboard panels: world attack map, country/server flow matrix, top attacker/source ranking, severity donut, attack ratio, latency percentiles, API health, and runtime footprint.
+- Added replay script to generate live Prometheus/Grafana evidence from real CICIoT2023 rows.
+- Added Airflow Docker service and verified a successful DAG test run.
+
+### Commands Run
+
+```powershell
+$env:PYTHONPATH='src'
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.ingest_ciciot2023 --rows 3000 --page-size 100 --offset 0
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.validate_data
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.great_expectations_check
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
+.\.venv\Scripts\python.exe -m cyberguard_ml.monitoring.drift_report
+.\.venv\Scripts\python.exe -m cyberguard_ml.monitoring.soc_report
+.\.venv\Scripts\dvc.exe repro
+.\.venv\Scripts\dvc.exe dag
+.\.venv\Scripts\dvc.exe metrics show
+.\.venv\Scripts\dvc.exe status
+.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m ruff check src tests dags scripts
+.\.venv\Scripts\python.exe -m mypy src
+.\.venv\Scripts\python.exe -m black --check src tests dags scripts
+.\.venv\Scripts\python.exe -m isort --check-only src tests dags scripts
+docker compose build api
+docker compose up -d --force-recreate api prometheus grafana
+.\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 240 --sleep 0.03
+docker compose --profile airflow up -d airflow
+docker exec cyberguard-airflow bash -lc "airflow dags test cyberguard_mlops_pipeline 2026-05-06"
+```
+
+### Current Validation Results
+
+```json
+{
+  "passed": true,
+  "row_count": 3000,
+  "attack_rate": 0.8433333333333334,
+  "errors": [],
+  "warnings": []
+}
+```
+
+### Current Model Results
+
+Best candidate by F1-score: `gradient_boosting`.
+
+```json
+[
+  {
+    "name": "logistic_regression",
+    "accuracy": 0.8348484848484848,
+    "precision": 1.0,
+    "recall": 0.8043087971274686,
+    "f1": 0.891542288557214,
+    "roc_auc": 0.9381569085426436
+  },
+  {
+    "name": "random_forest",
+    "accuracy": 0.8909090909090909,
+    "precision": 0.9821073558648111,
+    "recall": 0.8868940754039497,
+    "f1": 0.9320754716981132,
+    "roc_auc": 0.9614090742709731
+  },
+  {
+    "name": "gradient_boosting",
+    "accuracy": 0.9030303030303031,
+    "precision": 0.9624765478424016,
+    "recall": 0.9210053859964094,
+    "f1": 0.9412844036697248,
+    "roc_auc": 0.9565285597252968
+  }
+]
+```
+
+### Monitoring Results
+
+```json
+{
+  "engine": "evidently_with_json_summary",
+  "drifted_columns": {
+    "variance": 0.2883
+  },
+  "drift_detected": true,
+  "reference_rows": 2100,
+  "current_rows": 900,
+  "html_report": "reports/evidently_drift_report.html"
+}
+```
+
+### Verified URLs
+
+- FastAPI docs: `http://localhost:8000/docs`
+- MLflow UI: `http://localhost:5001`
+- Prometheus targets: `http://localhost:9090/targets`
+- Grafana SOC dashboard: `http://localhost:3000/d/cyberguard-soc/cyberguard-ciciot2023-soc-command-center?orgId=1&from=now-30m&to=now&refresh=5s`
+- Airflow UI: `http://localhost:8080`
+- Airflow local login from current container: username `admin`, password stored in `docker exec cyberguard-airflow bash -lc "cat /opt/airflow/simple_auth_manager_passwords.json.generated"`
+
+### Verification Results
+
+- `pytest`: 7 passed.
+- `ruff`: passed.
+- `mypy`: passed.
+- `black --check`: passed.
+- `isort --check-only`: passed.
+- `dvc status`: data and pipelines are up to date.
+- Docker API health: `{"status":"ok","model_loaded":"true"}`.
+- Prometheus metrics include `cyberguard_predictions_by_context_total` and `cyberguard_predicted_attacks_by_context_total`.
+- Airflow DAG test finished with state `success`.

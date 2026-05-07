@@ -36,18 +36,25 @@ def main() -> None:
     current = pd.read_csv(CURRENT_DATA)
     payload = _fallback_report(reference, current)
     summary_output = REPORTS_DIR / "drift_report.json"
+    html_output = REPORTS_DIR / "evidently_drift_report.html"
     try:
         from evidently import Report
         from evidently.presets import DataDriftPreset
 
         report = Report([DataDriftPreset()])
         snapshot = report.run(current, reference)
-        html_output = REPORTS_DIR / "evidently_drift_report.html"
-        snapshot.save_html(html_output)
+        snapshot.save_html(str(html_output))
+        if not html_output.exists():
+            raise FileNotFoundError(f"Evidently did not create {html_output}")
         payload["engine"] = "evidently_with_json_summary"
         payload["html_report"] = str(html_output)
     except Exception:
-        pass
+        html_output.write_text(
+            "<html><body><h1>CyberGuard Drift Report</h1>"
+            f"<pre>{json.dumps(payload, indent=2)}</pre></body></html>",
+            encoding="utf-8",
+        )
+        payload["html_report"] = str(html_output)
     summary_output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(json.dumps(payload, indent=2))
 

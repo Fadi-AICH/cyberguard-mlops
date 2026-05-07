@@ -12,4 +12,4 @@ screenshots/
 tmp/
 reports/
 data/
-
+!data/raw/dataset_metadata.json

@@ -17,6 +17,7 @@ reports/*.json
 reports/*.log
 tmp/
 data/raw/*.csv
+data/raw/*.json
 data/processed/*.csv
 data/processed/*.parquet
 *.log

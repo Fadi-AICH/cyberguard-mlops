@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import subprocess
 from datetime import datetime
+from os import environ
 
 try:
     from airflow.sdk import DAG, task
@@ -15,7 +16,8 @@ PROJECT_DIR = "/opt/airflow/project"
 
 
 def _run_module(module: str, *args: str) -> None:
-    subprocess.run(["python", "-m", module, *args], cwd=PROJECT_DIR, check=True)
+    env = {**environ, "PYTHONPATH": f"{PROJECT_DIR}/src"}
+    subprocess.run(["python", "-m", module, *args], cwd=PROJECT_DIR, env=env, check=True)
 
 
 with DAG(
@@ -29,7 +31,7 @@ with DAG(
 
     @task
     def generate_data() -> None:
-        _run_module("cyberguard_ml.pipeline.generate_data", "--rows", "6000")
+        _run_module("cyberguard_ml.pipeline.ingest_ciciot2023", "--rows", "3000")
 
     @task
     def validate_data() -> None:
@@ -43,4 +45,8 @@ with DAG(
     def drift_report() -> None:
         _run_module("cyberguard_ml.monitoring.drift_report")
 
-    generate_data() >> validate_data() >> train_model() >> drift_report()
+    @task
+    def great_expectations() -> None:
+        _run_module("cyberguard_ml.pipeline.great_expectations_check")
+
+    generate_data() >> validate_data() >> great_expectations() >> train_model() >> drift_report()

@@ -1,0 +1,116 @@
+schema: '2.0'
+stages:
+  generate_data:
+    cmd: .\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.ingest_ciciot2023 
+      --rows 3000 --page-size 100 --offset 0
+    deps:
+    - path: src/cyberguard_ml/pipeline/ingest_ciciot2023.py
+      hash: md5
+      md5: b6b46d3c6f8dee61165435d92ea326cc
+      size: 7028
+    outs:
+    - path: data/processed/current_window.csv
+      hash: md5
+      md5: 6f319a72b75ff49edb81e91129cf1151
+      size: 206810
+    - path: data/processed/reference_window.csv
+      hash: md5
+      md5: 45f8b079ea361d27e656dcb3c6aa6573
+      size: 516516
+    - path: data/raw/dataset_metadata.json
+      hash: md5
+      md5: 694375f76aeb704944c1c0d702db24d9
+      size: 778
+    - path: data/raw/network_flows.csv
+      hash: md5
+      md5: 999d2de962c90a2f3b2191cd1f30d05e
+      size: 739044
+  validate_data:
+    cmd: .\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.validate_data
+    deps:
+    - path: data/raw/network_flows.csv
+      hash: md5
+      md5: 999d2de962c90a2f3b2191cd1f30d05e
+      size: 739044
+    - path: src/cyberguard_ml/pipeline/validate_data.py
+      hash: md5
+      md5: b22756e5dd6a032ed1d91bbb8da42ea1
+      size: 3886
+    outs:
+    - path: data/processed/network_flows_validated.csv
+      hash: md5
+      md5: 9e85698cff42af68de261520cc9a7a47
+      size: 738978
+    - path: reports/data_validation.json
+      hash: md5
+      md5: 4f9112e499fe9ffdbe9ae4b26453cc8f
+      size: 118
+  train_model:
+    cmd: .\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
+    deps:
+    - path: data/processed/network_flows_validated.csv
+      hash: md5
+      md5: 9e85698cff42af68de261520cc9a7a47
+      size: 738978
+    - path: src/cyberguard_ml/pipeline/train_model.py
+      hash: md5
+      md5: 36444b207f107d7f840afd95b5b9f0f1
+      size: 6570
+    outs:
+    - path: models/cyberguard_model.joblib
+      hash: md5
+      md5: 616de59d7a0185c03f3027d4a87c6a14
+      size: 144340
+    - path: models/metrics.json
+      hash: md5
+      md5: adf0151d55abac73f2a0e5fdeb7836d7
+      size: 648
+    - path: models/model_card.json
+      hash: md5
+      md5: c17f0097b9deec2833d59de2aad1f30d
+      size: 1383
+  drift_report:
+    cmd: .\.venv\Scripts\python.exe -m cyberguard_ml.monitoring.drift_report
+    deps:
+    - path: data/processed/current_window.csv
+      hash: md5
+      md5: 6f319a72b75ff49edb81e91129cf1151
+      size: 206810
+    - path: data/processed/reference_window.csv
+      hash: md5
+      md5: 45f8b079ea361d27e656dcb3c6aa6573
+      size: 516516
+    - path: src/cyberguard_ml/monitoring/drift_report.py
+      hash: md5
+      md5: 31ba4ceb3ed5b44a29b2bcb2ce1359d3
+      size: 2293
+    outs:
+    - path: reports/drift_report.json
+      hash: md5
+      md5: 11fbcc3c6a288c5894830815fb5d4423
+      size: 284
+    - path: reports/evidently_drift_report.html
+      hash: md5
+      md5: f6d340815a72d976ada913c1c7f5d1c2
+      size: 5593341
+  great_expectations:
+    cmd: .\.venv\Scripts\python.exe -m 
+      cyberguard_ml.pipeline.great_expectations_check
+    deps:
+    - path: data/processed/network_flows_validated.csv
+      hash: md5
+      md5: 9e85698cff42af68de261520cc9a7a47
+      size: 738978
+    - path: src/cyberguard_ml/pipeline/great_expectations_check.py
+      hash: md5
+      md5: c0d25e22d9199b3b5cfa957b3b4e1650
+      size: 2392
+    outs:
+    - path: reports/great_expectations_suite.json
+      hash: md5
+      md5: 89ec8dee0ed602a31d99b15e735e748c
+      size: 4931
+    - path: reports/great_expectations_validation.json
+      hash: md5
+      md5: 312539090950477c8e02f089939bd6e5
+      size: 285

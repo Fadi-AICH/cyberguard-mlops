@@ -18,6 +18,7 @@ dependencies = [
   "prometheus-client>=0.20",
   "python-multipart>=0.0.9",
   "PyYAML>=6.0",
+  "requests>=2.32",
 ]
 
 [project.optional-dependencies]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import asdict, dataclass
 from typing import Any
 
@@ -44,12 +45,14 @@ class ModelResult:
 def build_preprocessor() -> ColumnTransformer:
     """Create the feature preprocessing graph."""
 
-    return ColumnTransformer(
-        transformers=[
-            ("numeric", StandardScaler(), NUMERIC_FEATURES),
-            ("categorical", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL_FEATURES),
-        ]
-    )
+    transformers: list[tuple[str, Any, list[str]]] = [
+        ("numeric", StandardScaler(), NUMERIC_FEATURES)
+    ]
+    if CATEGORICAL_FEATURES:
+        transformers.append(
+            ("categorical", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL_FEATURES)
+        )
+    return ColumnTransformer(transformers=transformers)
 
 
 def candidate_models() -> dict[str, Any]:
@@ -117,19 +120,29 @@ def maybe_log_mlflow(results: list[ModelResult], best_model: Pipeline) -> None:
     except Exception:
         return
 
-    mlflow.set_experiment("cyberguard-intrusion-detection")
-    best_result = max(results, key=lambda item: item.f1)
-    with mlflow.start_run(run_name=f"best-{best_result.name}"):
-        mlflow.log_param("problem_type", "binary_intrusion_detection")
-        mlflow.log_param("best_model", best_result.name)
-        for result in results:
-            prefix = result.name
-            mlflow.log_metric(f"{prefix}_accuracy", result.accuracy)
-            mlflow.log_metric(f"{prefix}_precision", result.precision)
-            mlflow.log_metric(f"{prefix}_recall", result.recall)
-            mlflow.log_metric(f"{prefix}_f1", result.f1)
-            mlflow.log_metric(f"{prefix}_roc_auc", result.roc_auc)
-        mlflow.sklearn.log_model(best_model, name="cyberguard_model")
+    try:
+        mlflow.set_experiment("cyberguard-intrusion-detection")
+        best_result = max(results, key=lambda item: item.f1)
+        with mlflow.start_run(run_name=f"best-{best_result.name}") as run:
+            mlflow.log_param("problem_type", "binary_intrusion_detection")
+            mlflow.log_param("dataset", "CICIoT2023 sampled via Hugging Face mirror")
+            mlflow.log_param("best_model", best_result.name)
+            for result in results:
+                prefix = result.name
+                mlflow.log_metric(f"{prefix}_accuracy", result.accuracy)
+                mlflow.log_metric(f"{prefix}_precision", result.precision)
+                mlflow.log_metric(f"{prefix}_recall", result.recall)
+                mlflow.log_metric(f"{prefix}_f1", result.f1)
+                mlflow.log_metric(f"{prefix}_roc_auc", result.roc_auc)
+            model_info = mlflow.sklearn.log_model(
+                best_model,
+                name="cyberguard_model",
+                registered_model_name="CyberGuard-CICIoT2023-Intrusion-Detector",
+            )
+            mlflow.set_tag("run_id", run.info.run_id)
+            mlflow.set_tag("model_uri", model_info.model_uri)
+    except Exception as exc:
+        print(f"MLflow logging skipped: {exc}", file=sys.stderr)
 
 
 def write_artifacts(best_model: Pipeline, results: list[ModelResult]) -> None:
@@ -144,12 +157,14 @@ def write_artifacts(best_model: Pipeline, results: list[ModelResult]) -> None:
         json.dumps(
             {
                 "model_name": "CyberGuard Intrusion Detector",
-                "problem": "Binary network intrusion detection",
+                "dataset": "CICIoT2023 real IoT intrusion detection sample",
+                "problem": "Binary IoT network intrusion detection",
                 "best_candidate": best,
                 "features": FEATURES,
-                "intended_use": "Educational MLOps project and defensive triage assistant.",
+                "intended_use": "Educational MLOps project and defensive IoT SOC triage assistant.",
                 "limitations": [
-                    "Synthetic data is reproducible and CIC-style, but not a replacement for production telemetry.",
+                    "The project uses a reproducible sample of CICIoT2023, not the full 38M+ row benchmark.",
+                    "Country, source IP, and destination server fields are deterministic SOC enrichments for monitoring visuals only.",
                     "Predictions support analyst triage and must not be used as the only security control.",
                 ],
             },

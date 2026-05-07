@@ -27,8 +27,26 @@ app = FastAPI(
 )
 
 REQUEST_COUNT = Counter("cyberguard_predictions_total", "Prediction requests") if Counter else None
+REQUEST_BY_CONTEXT = (
+    Counter(
+        "cyberguard_predictions_by_context_total",
+        "Prediction requests by country, server, and severity",
+        ["country", "server", "severity"],
+    )
+    if Counter
+    else None
+)
 ATTACK_COUNT = (
     Counter("cyberguard_predicted_attacks_total", "Predicted attacks") if Counter else None
+)
+ATTACK_BY_CONTEXT = (
+    Counter(
+        "cyberguard_predicted_attacks_by_context_total",
+        "Predicted attacks by country, server, and severity",
+        ["country", "server", "severity"],
+    )
+    if Counter
+    else None
 )
 LATENCY = (
     Histogram("cyberguard_prediction_latency_seconds", "Prediction latency") if Histogram else None
@@ -73,6 +91,11 @@ def predict(flow: NetworkFlow) -> PredictionResponse:
     start = time.perf_counter()
     if REQUEST_COUNT:
         REQUEST_COUNT.inc()
+    context = {
+        "country": flow.source_country,
+        "server": flow.destination_server,
+        "severity": "unknown",
+    }
     try:
         model = load_model()
         frame = pd.DataFrame([flow.model_dump()])[FEATURES]
@@ -84,8 +107,13 @@ def predict(flow: NetworkFlow) -> PredictionResponse:
             LATENCY.observe(time.perf_counter() - start)
 
     is_attack = probability >= 0.5
+    context["severity"] = risk_level(probability)
+    if REQUEST_BY_CONTEXT:
+        REQUEST_BY_CONTEXT.labels(**context).inc()
     if is_attack and ATTACK_COUNT:
         ATTACK_COUNT.inc()
+    if is_attack and ATTACK_BY_CONTEXT:
+        ATTACK_BY_CONTEXT.labels(**context).inc()
     return PredictionResponse(
         is_attack=is_attack,
         attack_probability=round(probability, 5),

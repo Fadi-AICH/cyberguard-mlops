@@ -10,7 +10,7 @@ Use Python 3.11 explicitly on this machine:
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.generate_data --rows 6000
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.ingest_ciciot2023 --rows 3000
 .\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.validate_data
 .\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
 .\.venv\Scripts\python.exe -m pytest
@@ -40,4 +40,4 @@ The Docker MLflow service uses host port `5001` because Windows may keep a stale
 
 ## Project Theme
 
-The ML problem is binary intrusion detection from network-flow telemetry. The generated data uses CIC/KDD-style fields such as protocol, service, TCP flags, byte counts, connection rates, error rates, entropy, and login anomalies. This keeps the project reproducible while matching a realistic cyber-defense scenario.
+The ML problem is binary intrusion detection from real CICIoT2023 network-flow telemetry. CICIoT2023 was released in 2023 by the Canadian Institute for Cybersecurity at the University of New Brunswick and contains IoT traffic from 105 devices with 33 attacks grouped into DDoS, DoS, Recon, Web-based, Brute Force, Spoofing, and Mirai categories.
