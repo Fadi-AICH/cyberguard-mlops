@@ -1,0 +1,74 @@
+\chapter{Déploiement, serving et monitoring}
+
+\section{FastAPI}
+FastAPI expose le modèle en REST. Les endpoints principaux sont \path{/health}, \path{/predict}, \path{/batch-predict} et \path{/metrics}. La documentation Swagger permet de tester l'API directement dans le navigateur.
+
+Le endpoint \path{/health} sert aux vérifications de disponibilité. Le endpoint \path{/predict} sert au scoring temps réel. Le endpoint \path{/batch-predict} permet d'envoyer plusieurs flux en une seule requête. Enfin, \path{/metrics} expose les compteurs et histogrammes utilisés par Prometheus. Cette séparation rend l'API lisible et facilite les tests de déploiement.
+
+\screenshotfigure[0.58\textheight]{07_fastapi_docs_ciciot2023.png}{Documentation interactive FastAPI.}{fig:fastapi_docs}
+\screenshotfigure[0.58\textheight]{08_prediction_response.png}{Exemple de réponse de prédiction.}{fig:prediction_response}
+
+\section{Docker Compose}
+Docker Compose lance les services nécessaires au projet. MLflow est exposé sur le port 5001 car le port 5000 peut être occupé sous Windows.
+
+\screenshotfigure[0.58\textheight]{09_docker_services-desktop.png}{Services CyberGuard dans Docker Desktop.}{fig:docker_desktop}
+\smallshot{09_docker_services-terminal.png}{État Docker Compose dans le terminal.}{fig:docker_terminal}
+
+\begin{table}[H]
+\centering
+\caption{Services Docker}
+\label{tab:services}
+\begin{tabularx}{\linewidth}{@{}lclY@{}}
+\toprule
+\textbf{Service} & \textbf{Port} & \textbf{Outil} & \textbf{Rôle}\\
+\midrule
+api & 8000 & FastAPI & Serving et métriques.\\
+mlflow & 5001 & MLflow & Tracking et registry.\\
+prometheus & 9090 & Prometheus & Scraping des métriques.\\
+grafana & 3000 & Grafana & Dashboard SOC.\\
+soc-ui & 8501 & Streamlit & Interface analyste.\\
+airflow & 8080 & Airflow & Orchestration.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Prometheus}
+Prometheus collecte les métriques exposées par l'API : nombre de prédictions, attaques, latence, labels pays/serveur/sévérité et santé du service \cite{prometheus_python}.
+
+\screenshotfigure[0.58\textheight]{10_prometheus_targets.png}{Prometheus targets actifs.}{fig:prometheus_targets}
+
+\section{Grafana SOC Command Center}
+Le dashboard Grafana a été conçu comme une console SOC : KPI supérieurs, séries temporelles, distribution de sévérité, ranking des attaquants, carte monde et matrice pays/serveur \cite{grafana_best_practices}.
+
+Le dashboard n'est pas seulement décoratif. Il répond à des questions opérationnelles : l'API est-elle disponible ? Combien de prédictions sont faites ? Quelle part est malveillante ? Quels pays sources dominent les alertes ? Quels serveurs sont touchés ? La latence augmente-t-elle ? Ces éléments permettent de relier le modèle à la supervision de production.
+
+\screenshotfigure[0.84\textheight]{11_grafana_soc_dashboard.png}{Dashboard Grafana CyberGuard CICIoT2023 SOC Command Center.}{fig:grafana_soc}
+
+\section{Drift avec Evidently}
+Evidently compare la fenêtre de référence et la fenêtre courante \cite{evidently_drift}. Le rapport actuel détecte une dérive sur \path{variance}.
+
+\begin{table}[H]
+\centering
+\caption{Résumé du drift}
+\label{tab:drift}
+\begin{tabularx}{0.75\linewidth}{@{}lC@{}}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur}\\
+\midrule
+Drift détecté & Oui\\
+Colonne & \path{variance}\\
+Score relatif & 0,2883\\
+Référence & 2 100 lignes\\
+Courant & 900 lignes\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\screenshotfigure[0.62\textheight]{12_evidently_drift_html.png}{Rapport HTML Evidently.}{fig:evidently_drift}
+\smallshot{13_soc_threat_report_html.png}{Rapport SOC HTML.}{fig:soc_threat_report}
+
+\section{Commandes de monitoring}
+\begin{lstlisting}
+docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui
+.\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 500 --sleep 0.02 --timeout 30 --retries 2
+\end{lstlisting}

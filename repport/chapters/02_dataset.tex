@@ -1,0 +1,104 @@
+\chapter{Présentation des bases de données}
+
+\section{Origine du dataset}
+Le projet utilise \textbf{CICIoT2023}, dataset public publié en 2023 par le Canadian Institute for Cybersecurity de l'University of New Brunswick. L'article associé décrit un benchmark d'attaques à grande échelle dans un environnement IoT, avec 105 appareils et 33 attaques réparties dans plusieurs familles \cite{neto2023ciciot,unb2023ciciot}.
+
+Le dataset complet est volumineux. Pour garantir une exécution reproductible sur une machine locale, le projet ingère un échantillon de 3 000 lignes. Ce choix est volontaire : il permet de démontrer la démarche MLOps complète sans transformer le rendu en problème de stockage massif.
+
+\begin{table}[H]
+\centering
+\caption{Fiche descriptive du dataset}
+\label{tab:dataset_description}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Champ} & \textbf{Description}\\
+\midrule
+Dataset & CICIoT2023\\
+Année & 2023\\
+Origine & Canadian Institute for Cybersecurity, University of New Brunswick\\
+Type de données & Flux réseau IoT\\
+Problème & Classification binaire attaque/bénin\\
+Taille utilisée & 3 000 lignes validées\\
+Fenêtres & 2 100 lignes de référence et 900 lignes courantes pour le drift\\
+Target & \path{is_attack}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Ingestion}
+L'ingestion est réalisée par le module \path{cyberguard_ml.pipeline.ingest_ciciot2023}. Il télécharge ou récupère les données, normalise les colonnes, construit la cible binaire et crée des enrichissements SOC pour les dashboards.
+
+\begin{lstlisting}
+$env:PYTHONPATH='src'
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.ingest_ciciot2023 --rows 3000 --page-size 100 --offset 0
+\end{lstlisting}
+
+\screenshotfigure[0.62\textheight]{02_ciciot2023_ingestion_validation.png}{Ingestion et validation du dataset CICIoT2023.}{fig:ingestion_validation}
+
+Le script d'ingestion a été conçu pour être relançable. Il accepte un nombre de lignes, une taille de page et un offset afin de pouvoir changer la taille de l'échantillon sans modifier le code. Cette approche évite de figer la donnée dans le projet : si un autre échantillon est souhaité, il suffit de relancer l'ingestion puis DVC détectera les artefacts à reconstruire.
+
+\section{EDA et problèmes identifiés}
+L'EDA du projet est orientée MLOps : elle sert à identifier les risques qui peuvent casser une chaîne d'entraînement ou fausser le modèle.
+
+\begin{itemize}
+  \item \textbf{Déséquilibre de classes} : l'échantillon contient 84,33 \% d'attaques. Le split doit donc être stratifié.
+  \item \textbf{Variables très dispersées} : certaines colonnes, notamment \path{variance}, peuvent changer fortement entre les fenêtres.
+  \item \textbf{Risque de leakage} : les champs \path{source_country}, \path{source_ip}, \path{destination_server} et \path{severity} sont utiles pour le SOC, mais exclus des features.
+  \item \textbf{Drift potentiel} : la comparaison référence/courant détecte un drift sur \path{variance}.
+\end{itemize}
+
+\section{Validation des données}
+La validation produit \path{reports/data_validation.json}. Elle vérifie le nombre de lignes, la cible, les colonnes nécessaires, les erreurs bloquantes et les avertissements. Le résultat courant est :
+
+\begin{table}[H]
+\centering
+\caption{Validation des données}
+\label{tab:data_validation}
+\begin{tabularx}{0.75\linewidth}{@{}lC@{}}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur}\\
+\midrule
+Validation globale & Réussie\\
+Nombre de lignes & 3 000\\
+Taux d'attaque & 84,33 \%\\
+Erreurs & 0\\
+Avertissements & 0\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{lstlisting}
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.validate_data
+Get-Content .\reports\data_validation.json
+\end{lstlisting}
+
+Cette validation joue le rôle de garde-fou avant l'entraînement. Si le schéma change, si la cible disparaît ou si une colonne essentielle est invalide, le pipeline doit échouer tôt. Dans un contexte MLOps, échouer tôt est préférable à entraîner silencieusement un modèle incohérent.
+
+\section{Versionnage avec DVC}
+DVC formalise les dépendances, sorties et métriques du pipeline. Le fichier \path{dvc.yaml} agit comme une carte de reproductibilité : si une dépendance change, DVC sait quelle étape relancer \cite{dvc_pipelines}.
+
+\screenshotfigure[0.62\textheight]{04_dvc_pipeline_ciciot2023.png}{Pipeline DVC et métriques suivies.}{fig:dvc_pipeline}
+
+\begin{lstlisting}
+.\.venv\Scripts\dvc.exe repro
+.\.venv\Scripts\dvc.exe dag
+.\.venv\Scripts\dvc.exe metrics show
+.\.venv\Scripts\dvc.exe status
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Stages DVC}
+\label{tab:dvc_stages}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Stage} & \textbf{Rôle}\\
+\midrule
+\path{generate_data} & Ingestion CICIoT2023 et création des fenêtres de référence/courante.\\
+\path{validate_data} & Validation du schéma et export du dataset validé.\\
+\path{train_model} & Entraînement, comparaison des modèles et export du meilleur artefact.\\
+\path{drift_report} & Rapport de drift Evidently.\\
+\path{great_expectations} & Suite et résultat de validation formalisés.\\
+\bottomrule
+\end{tabularx}
+\end{table}

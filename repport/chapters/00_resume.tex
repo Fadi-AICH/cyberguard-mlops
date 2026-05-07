@@ -1,0 +1,11 @@
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\projectname{} est une plateforme MLOps complète pour la détection d'intrusions dans des flux réseau IoT. Le projet utilise un échantillon réel et reproductible du dataset CICIoT2023, publié en 2023 par le Canadian Institute for Cybersecurity de l'University of New Brunswick. La solution couvre tout le cycle de vie d'un modèle : ingestion, validation, expérimentation, tracking, registry, orchestration, API, conteneurisation, monitoring, drift et interface analyste SOC.
+
+Le modèle final retenu est un \textbf{Gradient Boosting}. Il atteint un F1-score de \textbf{0,941} et un ROC-AUC de \textbf{0,956}. Le résultat n'est pas présenté comme un simple score de notebook : il est intégré dans une chaîne industrielle avec \tooltag{DVC}, \tooltag{Great Expectations}, \tooltag{MLflow}, \tooltag{FastAPI}, \tooltag{Docker}, \tooltag{Prometheus}, \tooltag{Grafana}, \tooltag{Airflow}, \tooltag{GitHub Actions} et \tooltag{Streamlit}.
+
+L'objectif métier est d'aider un analyste SOC à prioriser les flux suspects. L'interface Streamlit expose les KPI, les cartes, le ranking des pays sources, la file d'événements, le live scoring et les preuves modèle. Le dashboard Grafana apporte l'observabilité technique et SOC : disponibilité API, débit de prédiction, ratio d'attaques, latence, sévérité, pays sources, serveurs et drift. Le rapport documente également les commandes de reproduction afin qu'un évaluateur puisse relancer le projet.
+
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+Nous remercions notre professeur LAZAAR MOHAMED pour le cadrage du projet et pour l'exigence d'une démarche MLOps complète. Ce travail a été conçu comme une démonstration professionnelle : il privilégie la reproductibilité, la qualité logicielle, la traçabilité et l'utilisabilité par un analyste.

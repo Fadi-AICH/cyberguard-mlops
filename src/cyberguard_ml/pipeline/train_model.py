@@ -162,7 +162,7 @@ def write_artifacts(best_model: Pipeline, results: list[ModelResult]) -> None:
                 "problem": "Binary IoT network intrusion detection",
                 "best_candidate": best,
                 "features": FEATURES,
-                "intended_use": "Educational MLOps project and defensive IoT SOC triage assistant.",
+                "intended_use": "Educational MLOps project and defensive IoT SOC triage tool.",
                 "limitations": [
                     "The project uses a reproducible sample of CICIoT2023, not the full 38M+ row benchmark.",
                     "Country, source IP, and destination server fields are deterministic SOC enrichments for monitoring visuals only.",

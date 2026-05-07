@@ -1,0 +1,52 @@
+\begin{titlepage}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[inner sep=0pt] at (current page.center)
+    {\includegraphics[width=\paperwidth,height=\paperheight]{cover_background.png}};
+  \fill[CyberNavy,opacity=0.88] (current page.south west) rectangle (current page.north east);
+  \fill[CyberCyan,opacity=0.18] (current page.north west) rectangle ([xshift=1.05cm]current page.south west);
+  \fill[CyberGreen,opacity=0.32] ([xshift=1.05cm]current page.north west) rectangle ([xshift=1.16cm]current page.south west);
+  \draw[CyberCyan,line width=1.0pt] ([xshift=1.45cm,yshift=-3.25cm]current page.north west) --
+    ([xshift=-1.45cm,yshift=-3.25cm]current page.north east);
+
+  \node[anchor=north west,xshift=1.45cm,yshift=-0.95cm] at (current page.north west)
+    {\includegraphics[width=4.1cm]{ismagilogo.png}};
+  \node[anchor=north east,xshift=-1.45cm,yshift=-1.1cm,text=CyberGreen] at (current page.north east)
+    {\Large\bfseries Rapport Projet Machine Learning};
+
+  \node[anchor=north west,text=white,xshift=1.55cm,yshift=-4.25cm,text width=17.6cm] at (current page.north west) {
+    {\fontsize{35}{41}\selectfont\bfseries CyberGuard MLOps}\\[0.28cm]
+    {\Large\bfseries Plateforme MLOps de détection d'intrusions IoT}\\[0.22cm]
+    {\large CICIoT2023 \;|\; FastAPI \;|\; MLflow \;|\; DVC \;|\; Airflow \;|\; Docker \;|\; Grafana \;|\; Streamlit SOC}\\[0.95cm]
+    {\color{CyberCyan}\rule{0.84\linewidth}{1.2pt}}\\[0.55cm]
+    \begin{minipage}{0.82\linewidth}
+    \color{white}
+    \large
+    Une chaîne MLOps complète pour entraîner, valider, déployer et surveiller un modèle de détection d'intrusions dans un contexte SOC moderne.
+    \end{minipage}
+  };
+
+  \node[anchor=west,text=white,xshift=1.55cm,yshift=1.1cm] at (current page.west) {
+    \begin{minipage}{0.47\linewidth}
+      \textcolor{CyberGreen}{\Large\bfseries Informations}\\[0.35cm]
+      \begin{tabular}{@{}ll@{}}
+        \textbf{Filière} & CI2 CYBER\\
+        \textbf{Module} & Machine Learning\\
+        \textbf{Professeur} & LAZAAR MOHAMED\\
+        \textbf{Année} & 2025--2026\\
+      \end{tabular}
+    \end{minipage}
+  };
+
+  \node[anchor=south west,text=white,xshift=1.55cm,yshift=2.05cm,text width=18cm] at (current page.south west) {
+    \textcolor{CyberGreen}{\Large\bfseries Réalisé par}\\[0.25cm]
+    {\normalsize
+    AICH FADI\\
+    YOUSSOUF KEITA\\
+    LEKOGHO OSSIE CELESTIN CALVINE KILLIAN\\
+    MAALLEM MEHDI}
+  };
+
+  \node[anchor=south east,text=CyberCyan,xshift=-1.45cm,yshift=1.0cm] at (current page.south east)
+    {\bfseries Mai 2026 \;|\; Rapport 20+ pages};
+\end{tikzpicture}
+\end{titlepage}

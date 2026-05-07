@@ -1,0 +1,35 @@
+\chapter{Commandes détaillées du projet}
+
+\section{Vérification environnement}
+\begin{lstlisting}
+python --version
+py -3.11 --version
+docker --version
+docker compose version
+git --version
+node --version
+npm --version
+\end{lstlisting}
+
+\section{Arrêt et redémarrage}
+\begin{lstlisting}
+docker compose --profile airflow down
+docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui
+docker compose --profile airflow ps
+\end{lstlisting}
+
+\section{Tests API}
+\begin{lstlisting}
+Invoke-RestMethod http://localhost:8000/health
+Invoke-WebRequest http://localhost:8000/docs
+Invoke-WebRequest http://localhost:8000/metrics
+\end{lstlisting}
+
+\section{GitHub}
+\begin{lstlisting}
+git status
+git add -A
+git commit -m "Build CyberGuard MLOps project"
+git push origin main
+gh workflow run ci.yml --repo Fadi-AICH/cyberguard-mlops
+\end{lstlisting}

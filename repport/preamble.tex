@@ -1,0 +1,139 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,top=2.3cm,bottom=2.4cm,left=2.35cm,right=2.35cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{pdflscape}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+
+\addbibresource{references.bib}
+
+\graphicspath{{screenshots/}{../screenshots/}}
+
+\definecolor{CyberNavy}{HTML}{07111F}
+\definecolor{CyberPanel}{HTML}{0D1B2E}
+\definecolor{CyberBlue}{HTML}{2D9CDB}
+\definecolor{CyberCyan}{HTML}{38E8FF}
+\definecolor{CyberGreen}{HTML}{27E7A6}
+\definecolor{CyberRed}{HTML}{FF4048}
+\definecolor{CyberOrange}{HTML}{FF9F1C}
+\definecolor{CyberText}{HTML}{1F2937}
+\definecolor{CyberMuted}{HTML}{667085}
+\definecolor{CodeBg}{HTML}{F6F8FA}
+\definecolor{SoftLine}{HTML}{D0D5DD}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=CyberBlue,
+  citecolor=CyberBlue,
+  urlcolor=CyberBlue,
+  pdftitle={CyberGuard MLOps - Rapport Projet Machine Learning},
+  pdfauthor={AICH FADI, YOUSSOUF KEITA, LEKOGHO OSSIE CELESTIN CALVINE KILLIAN, MAALLEM MEHDI}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\lhead{\textbf{CyberGuard MLOps}}
+\rhead{CI2 CYBER}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+
+\titleformat{\chapter}
+  {\normalfont\huge\bfseries\color{CyberNavy}}
+  {\thechapter}{1em}{}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{CyberNavy}}
+  {\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{CyberPanel}}
+  {\thesubsection}{0.6em}{}
+
+\captionsetup{
+  labelfont={bf,color=CyberNavy},
+  font=small,
+  justification=centering
+}
+
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.25em}
+\setlist[enumerate]{leftmargin=1.5em,itemsep=0.25em}
+\renewcommand{\arraystretch}{1.2}
+
+\lstdefinestyle{powershell}{
+  backgroundcolor=\color{CodeBg},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  rulecolor=\color{CyberMuted},
+  xleftmargin=0.5em,
+  xrightmargin=0.5em,
+  language=bash,
+  showstringspaces=false,
+  tabsize=2
+}
+\lstset{style=powershell}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\newtcolorbox{cyberbox}[1]{
+  enhanced,
+  colback=CyberPanel!4,
+  colframe=CyberBlue!70!black,
+  boxrule=0.7pt,
+  arc=1.2mm,
+  title=\textbf{#1},
+  coltitle=white,
+  colbacktitle=CyberNavy,
+  attach boxed title to top left={xshift=2mm,yshift=-2mm},
+  boxed title style={arc=1mm,boxrule=0pt},
+  before skip=0.7em,
+  after skip=0.7em
+}
+
+\newcommand{\metric}[2]{\textbf{#1} & #2\\}
+
+\newcommand{\screenshotfigure}[4][0.84\textheight]{
+  \begin{figure}[H]
+    \centering
+    \fcolorbox{CyberNavy}{white}{\includegraphics[width=\linewidth,height=#1,keepaspectratio]{#2}}
+    \caption{#3}
+    \label{#4}
+  \end{figure}
+  \FloatBarrier
+}
+
+\newcommand{\smallshot}[4][0.47\textheight]{
+  \begin{figure}[H]
+    \centering
+    \fcolorbox{CyberNavy}{white}{\includegraphics[width=0.94\linewidth,height=#1,keepaspectratio]{#2}}
+    \caption{#3}
+    \label{#4}
+  \end{figure}
+}
+
+\newcommand{\tooltag}[1]{\textcolor{CyberBlue}{\texttt{#1}}}
+\newcommand{\projectname}{\textbf{CyberGuard MLOps}}
+\newcommand{\important}[1]{\textbf{\textcolor{CyberRed}{#1}}}

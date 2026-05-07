@@ -1,0 +1,50 @@
+\chapter{Architecture MLOps globale}
+
+\section{Vue d'ensemble}
+L'architecture CyberGuard suit les huit phases demandées dans le sujet : conception, données, développement modèle, automatisation, validation, déploiement, monitoring et gouvernance. La figure suivante remplace le schéma générique par le process flow réel du projet.
+
+\begin{landscape}
+\begin{figure}[H]
+\centering
+\fcolorbox{CyberNavy}{white}{\includegraphics[width=0.98\linewidth,height=0.82\textheight,keepaspectratio]{architecture.jpeg}}
+\caption{Architecture MLOps détaillée de CyberGuard.}
+\label{fig:mlops_flow}
+\end{figure}
+\end{landscape}
+
+La figure \ref{fig:mlops_flow} résume le fonctionnement opérationnel du projet. Les données CICIoT2023 entrent dans le pipeline d'ingestion, sont validées, transformées puis utilisées pour entraîner plusieurs modèles. Le meilleur modèle est tracé dans MLflow et servi via FastAPI. En parallèle, Prometheus collecte les métriques de l'API, Grafana les transforme en dashboard SOC, Evidently analyse la dérive et Airflow orchestre la chaîne. Cette architecture est volontairement hybride : elle montre à la fois le chemin data science, le chemin déploiement et le chemin observabilité.
+
+\section{Couverture des huit phases}
+\begin{longtable}{@{}p{3.1cm}p{11cm}@{}}
+\caption{Correspondance entre le sujet et l'implémentation}\\
+\toprule
+\textbf{Phase} & \textbf{Implémentation}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Phase} & \textbf{Implémentation}\\
+\midrule
+\endhead
+Conception & Définition d'un cas SOC : classifier des flux IoT et aider l'analyste à prioriser.\\
+Données & Ingestion CICIoT2023, validation, nettoyage, enrichissement SOC et DVC.\\
+Modèle & Comparaison Logistic Regression, Random Forest, Gradient Boosting et sélection par F1-score.\\
+Automatisation & DVC pour le pipeline local et Airflow pour l'orchestration.\\
+Validation & Pytest, Great Expectations, model card, registry MLflow et qualité code.\\
+Déploiement & FastAPI, Docker Compose, inference temps réel, batch et locale.\\
+Monitoring & Prometheus, Grafana, Evidently, SOC threat report.\\
+Gouvernance & GitHub Actions, documentation, versionning, feedback et réentraînement.\\
+\bottomrule
+\end{longtable}
+
+\section{Choix d'architecture}
+Les choix techniques privilégient la reproductibilité et la démonstrabilité :
+\begin{itemize}
+  \item \tooltag{Python 3.11} : version stable et cohérente avec Airflow/Docker ;
+  \item \tooltag{scikit-learn} : modèles robustes, rapides et adaptés à un rapport académique ;
+  \item \tooltag{MLflow} : tracking, artefacts et registry ;
+  \item \tooltag{DVC} : pipeline et métriques versionnables ;
+  \item \tooltag{FastAPI} : API rapide avec documentation OpenAPI ;
+  \item \tooltag{Docker Compose} : reproductibilité multi-services ;
+  \item \tooltag{Prometheus/Grafana} : monitoring technique et SOC ;
+  \item \tooltag{Streamlit} : interface analyste rapide et interactive.
+\end{itemize}

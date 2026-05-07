@@ -1,0 +1,81 @@
+\chapter{Algorithmes et pipeline technique}
+
+\section{Features}
+Les features utilisées représentent des propriétés réseau : protocoles, flags TCP, taille de paquets, temporalité, taux et agrégats statistiques. Les variables d'enrichissement SOC sont exclues pour éviter une fuite de données.
+
+\begin{table}[H]
+\centering
+\caption{Familles de features}
+\label{tab:features}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Famille} & \textbf{Exemples}\\
+\midrule
+Protocoles & \path{protocol_type}, \path{tcp}, \path{udp}, \path{icmp}, \path{http}, \path{https}, \path{dns}.\\
+Flags TCP & \path{fin_flag_number}, \path{syn_flag_number}, \path{rst_flag_number}, \path{ack_flag_number}.\\
+Statistiques paquets & \path{min_packet_size}, \path{max_packet_size}, \path{avg_packet_size}, \path{std_packet_size}.\\
+Temporalité & \path{iat}, \path{rate}, \path{time_to_live}.\\
+Agrégats & \path{tot_sum}, \path{tot_size}, \path{packet_number}, \path{variance}.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Prétraitement}
+Le pipeline ML applique une séparation explicite entre les colonnes numériques et catégorielles. Les colonnes numériques sont standardisées et les colonnes catégorielles encodées. Cette organisation garantit que l'entraînement et l'inférence utilisent la même transformation.
+
+Le prétraitement est intégré au modèle sauvegardé. Cela évite un bug fréquent : entraîner avec une transformation locale puis servir en production avec une transformation différente. Le même artefact \path{models/cyberguard_model.joblib} contient donc la logique nécessaire pour appliquer les transformations attendues au moment de l'inférence.
+
+\section{Modèles comparés}
+\begin{itemize}
+  \item \textbf{Logistic Regression} : baseline linéaire, rapide, utile pour vérifier si le signal est exploitable.
+  \item \textbf{Random Forest} : modèle d'ensemble robuste, performant sur interactions non linéaires.
+  \item \textbf{Gradient Boosting} : modèle final, retenu pour le meilleur F1-score.
+\end{itemize}
+
+\screenshotfigure[0.58\textheight]{03_training_metrics_ciciot2023.png}{Entraînement et métriques finales.}{fig:training_metrics}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des métriques ML}
+\label{tab:model_metrics}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Modèle} & \textbf{Accuracy} & \textbf{Précision} & \textbf{Rappel} & \textbf{F1} & \textbf{ROC-AUC}\\
+\midrule
+Logistic Regression & 0,835 & 1,000 & 0,804 & 0,892 & 0,938\\
+Random Forest & 0,891 & 0,982 & 0,887 & 0,932 & \textbf{0,961}\\
+Gradient Boosting & \textbf{0,903} & 0,962 & \textbf{0,921} & \textbf{0,941} & 0,956\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Choix final}
+Le Gradient Boosting est choisi car il maximise le F1-score. Dans ce contexte, le F1-score est plus adapté que l'accuracy seule : il équilibre la capacité à détecter les attaques et la capacité à éviter trop de faux positifs.
+
+Le Random Forest obtient le meilleur ROC-AUC, mais le Gradient Boosting garde l'avantage sur le F1-score et le rappel. Pour un SOC, le rappel est particulièrement important : une attaque manquée peut être plus coûteuse qu'une alerte à vérifier. Le choix final est donc cohérent avec l'objectif métier de triage défensif.
+
+\section{Bugs ML classiques évités}
+\begin{table}[H]
+\centering
+\caption{Risques ML et protections}
+\label{tab:ml_bugs}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Risque} & \textbf{Protection mise en place}\\
+\midrule
+Data leakage & Exclusion des colonnes SOC enrichies des features.\\
+Split non stratifié & Split stratifié pour conserver la distribution de la cible.\\
+Mauvaise target & Target unique \path{is_attack}.\\
+Données invalides & Validation schéma/ranges avant entraînement.\\
+Confusion bug logiciel/ML & API health pour logiciel, métriques/drift pour ML.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Commandes du pipeline modèle}
+\begin{lstlisting}
+$env:PYTHONPATH='src'
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
+Get-Content .\models\metrics.json
+Get-Content .\models\model_card.json
+\end{lstlisting}

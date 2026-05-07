@@ -1,0 +1,25 @@
+\chapter{Tracking et registry}
+
+\section{MLflow Tracking}
+MLflow Tracking enregistre les paramètres, métriques, artefacts et modèles de chaque run \cite{mlflow_tracking}. CyberGuard l'utilise pour comparer les candidats et conserver la preuve expérimentale.
+
+\screenshotfigure[0.62\textheight]{06_mlflow_registry_ciciot2023.png}{MLflow Tracking et registre modèle.}{fig:mlflow_registry}
+\screenshotfigure[0.62\textheight]{22_mlflow_run_details_metrics_artifacts.png}{Détails d'un run MLflow : paramètres, métriques et artefacts.}{fig:mlflow_run_details}
+
+\section{Model Registry}
+Le modèle final est enregistré comme \path{CyberGuard-CICIoT2023-Intrusion-Detector}. Le cycle de vie recommandé est :
+\begin{enumerate}
+  \item \textbf{Candidate} : modèle entraîné et loggé ;
+  \item \textbf{Staging} : modèle validé par tests et métriques ;
+  \item \textbf{Production} : modèle utilisé par FastAPI ;
+  \item \textbf{Archived} : ancienne version conservée pour audit.
+\end{enumerate}
+
+\section{Model card}
+Le model card décrit le dataset, l'usage, les limites, le meilleur candidat et les features. Il précise que le modèle est un outil de triage éducatif et non une barrière de sécurité unique.
+
+\begin{lstlisting}
+$env:MLFLOW_TRACKING_URI='http://localhost:5001'
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
+Get-Content .\models\model_card.json
+\end{lstlisting}

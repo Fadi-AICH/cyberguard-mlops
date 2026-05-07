@@ -1,0 +1,66 @@
+\chapter{Guide de reproduction complet}
+
+\section{Cloner le projet}
+\begin{lstlisting}
+git clone https://github.com/Fadi-AICH/cyberguard-mlops.git
+Set-Location -LiteralPath 'C:\Users\fadia\OneDrive\Bureau\Projet ML'
+\end{lstlisting}
+
+\section{Créer le venv Python 3.11}
+\begin{lstlisting}
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\Activate.ps1
+$env:PYTHONPATH='src'
+\end{lstlisting}
+
+\section{Relancer les artefacts ML}
+\begin{lstlisting}
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.ingest_ciciot2023 --rows 3000 --page-size 100 --offset 0
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.validate_data
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.great_expectations_check
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.train_model
+.\.venv\Scripts\python.exe -m cyberguard_ml.monitoring.drift_report
+.\.venv\Scripts\python.exe -m cyberguard_ml.monitoring.soc_report
+\end{lstlisting}
+
+\section{Lancer tous les services}
+\begin{lstlisting}
+docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui
+docker compose --profile airflow ps
+\end{lstlisting}
+
+\section{Générer du trafic}
+\begin{lstlisting}
+.\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 500 --sleep 0.02 --timeout 30 --retries 2
+\end{lstlisting}
+
+\section{URLs}
+\begin{table}[H]
+\centering
+\caption{URLs de démonstration}
+\label{tab:urls}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Composant} & \textbf{URL}\\
+\midrule
+FastAPI & \url{http://localhost:8000/docs}\\
+MLflow & \url{http://localhost:5001}\\
+Prometheus & \url{http://localhost:9090/targets}\\
+Grafana & \url{http://localhost:3000/d/cyberguard-soc/cyberguard-ciciot2023-soc-command-center}\\
+Airflow & \url{http://localhost:8080}\\
+Streamlit & \url{http://localhost:8501}\\
+GitHub Actions & \url{https://github.com/Fadi-AICH/cyberguard-mlops/actions}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Compilation du rapport}
+\begin{lstlisting}
+Set-Location -LiteralPath 'C:\Users\fadia\OneDrive\Bureau\Projet ML\repport'
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+biber main
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+\end{lstlisting}

@@ -1,0 +1,69 @@
+\chapter{Introduction}
+
+\section{Contexte}
+Les environnements IoT modernes produisent une grande quantité de flux réseau. Dans un contexte de cybersécurité, ces flux peuvent contenir des attaques par déni de service, reconnaissance, brute force, spoofing, Mirai ou attaques web. Le problème n'est pas seulement de construire un modèle capable de classer un flux. Le vrai défi est de rendre ce modèle exploitable, contrôlable et surveillé.
+
+Un modèle non industrialisé peut donner un bon score localement puis échouer en production pour des raisons simples : dépendances différentes, données invalides, fuite d'information, absence de monitoring, dérive des distributions ou impossibilité de retrouver la version exacte du modèle. C'est précisément le rôle du MLOps : fiabiliser le cycle complet du modèle, depuis les données jusqu'à la supervision en production.
+
+\section{Problème métier}
+Le problème métier traité est la \textbf{priorisation SOC de flux réseau IoT}. Pour chaque flux, le système doit produire :
+\begin{itemize}
+  \item une prédiction binaire : bénin ou attaque ;
+  \item une probabilité d'attaque ;
+  \item un niveau de risque ;
+  \item des métriques de monitoring exploitables dans Grafana ;
+  \item une preuve consultable par un analyste.
+\end{itemize}
+
+\begin{cyberbox}{Question centrale}
+Comment construire une plateforme MLOps capable de détecter des intrusions IoT, de tracer toutes les expériences, de servir le modèle par API, de surveiller la production et de fournir une interface analyste claire ?
+\end{cyberbox}
+
+\section{Objectifs}
+Les objectifs du projet sont :
+\begin{itemize}
+  \item utiliser un dataset réel, public et récent ;
+  \item construire un pipeline reproductible avec DVC ;
+  \item valider les données avec une approche Great Expectations ;
+  \item comparer plusieurs algorithmes avec MLflow ;
+  \item enregistrer le meilleur modèle dans un registre ;
+  \item exposer le modèle avec FastAPI ;
+  \item déployer les composants avec Docker Compose ;
+  \item monitorer l'API avec Prometheus et Grafana ;
+  \item détecter le drift avec Evidently ;
+  \item orchestrer le pipeline avec Airflow ;
+  \item automatiser les tests avec GitHub Actions ;
+  \item produire un rapport professionnel en LaTeX.
+\end{itemize}
+
+\section{Métriques de succès}
+\begin{table}[H]
+\centering
+\caption{Métriques métier, ML et techniques}
+\label{tab:success_metrics}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Catégorie} & \textbf{Métriques retenues}\\
+\midrule
+Métier & Nombre d'alertes priorisées, visualisation des pays sources, distribution des sévérités, capacité à exporter une note d'incident.\\
+ML & Accuracy, précision, rappel, F1-score, ROC-AUC. Le F1-score est la métrique principale.\\
+Technique & Disponibilité API, débit de prédiction, ratio d'attaques prédites, latence p95, état Prometheus/Grafana.\\
+Gouvernance & Reproductibilité DVC, tracking MLflow, CI GitHub Actions, model card, preuves de validation.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Pourquoi le MLOps est nécessaire}
+Dans un projet cyber, un modèle isolé n'est pas suffisant. Il faut savoir quelle donnée l'a entraîné, quels paramètres ont été utilisés, quels tests ont été exécutés, quelle image Docker le sert, si l'API répond, si les distributions dérivent et comment un analyste peut interpréter le résultat. CyberGuard répond donc à la logique suivante :
+\begin{enumerate}
+  \item \textbf{Reproduire} : mêmes données, mêmes scripts, mêmes artefacts ;
+  \item \textbf{Valider} : données, code, modèle et API ;
+  \item \textbf{Déployer} : API et UI dans des conteneurs ;
+  \item \textbf{Observer} : métriques techniques et ML ;
+  \item \textbf{Améliorer} : drift, feedback et réentraînement.
+\end{enumerate}
+
+\section{Positionnement de CyberGuard}
+CyberGuard est positionné comme une preuve de concept avancée. Il ne prétend pas remplacer un SIEM, un IDS ou une plateforme SOAR, mais il montre comment un modèle ML peut être intégré dans une chaîne SOC réaliste. La valeur du projet est donc double : d'un côté, un classifieur entraîné sur des flux IoT ; de l'autre, une infrastructure permettant de le tester, l'exposer, le monitorer et documenter ses limites.
+
+Cette distinction est essentielle dans le rapport. Un projet ML académique classique s'arrêterait au tableau de métriques. Ici, chaque résultat est relié à une preuve d'exploitation : API documentée, dashboard Grafana, drift report, run MLflow, DAG Airflow, workflow GitHub Actions et interface Streamlit. Le rapport insiste donc sur la capacité à \textbf{opérer} le modèle, pas seulement à l'entraîner.

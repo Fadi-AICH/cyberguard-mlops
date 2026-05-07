@@ -21,3 +21,5 @@ data/raw/*.json
 data/processed/*.csv
 data/processed/*.parquet
 *.log
+cyberguard_overleaf_package/
+cyberguard_overleaf_report.zip

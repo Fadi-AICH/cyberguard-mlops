@@ -1,0 +1,42 @@
+\chapter{Orchestration et CI/CD}
+
+\section{Airflow}
+Airflow représente le pipeline sous forme de DAG : chaque tâche a un état, des logs et des dépendances \cite{airflow_tasks}. Cette vue est importante pour le rapport car elle prouve que le pipeline peut être orchestré, pas seulement exécuté à la main.
+
+\screenshotfigure[0.62\textheight]{14_airflow_dag_success.png}{DAG Airflow exécuté avec succès.}{fig:airflow_success}
+\screenshotfigure[0.62\textheight]{21_airflow_dag_graph_view.png}{Vue graphe Airflow avec dépendances.}{fig:airflow_graph}
+
+\begin{lstlisting}
+docker compose --profile airflow up -d airflow
+docker exec cyberguard-airflow bash -lc "airflow dags list"
+docker exec cyberguard-airflow bash -lc "airflow dags test cyberguard_mlops_pipeline 2026-05-06"
+\end{lstlisting}
+
+\section{GitHub Actions}
+GitHub Actions lance un workflow à chaque push, pull request ou déclenchement manuel \cite{github_actions_syntax}. Le workflow vérifie le formatage, le linting, le typage, les tests, la génération d'artefacts et les builds Docker.
+
+\screenshotfigure[0.58\textheight]{15_github_repo_actions.png}{GitHub Actions avec workflow réussi.}{fig:github_actions}
+\smallshot{15_github_repo.png}{Dépôt GitHub CyberGuard MLOps.}{fig:github_repo}
+
+\begin{table}[H]
+\centering
+\caption{Étapes GitHub Actions}
+\label{tab:ci_steps}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Étape} & \textbf{Description}\\
+\midrule
+Install & Installe Python 3.11 et les dépendances.\\
+Format/lint & Black, isort, Ruff, MyPy.\\
+Artifacts & Ingestion, validation, entraînement.\\
+Tests & Pytest.\\
+Build API & Construction image Docker FastAPI.\\
+Build SOC UI & Construction image Docker Streamlit.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{lstlisting}
+gh workflow run ci.yml --repo Fadi-AICH/cyberguard-mlops
+gh run list --repo Fadi-AICH/cyberguard-mlops --limit 5
+\end{lstlisting}

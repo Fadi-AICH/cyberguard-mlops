@@ -1,0 +1,41 @@
+\chapter{Interface SOC et résultats}
+
+\section{Interface Streamlit}
+L'interface \tooltag{Streamlit} transforme les artefacts ML en outil utilisable par un analyste \cite{streamlit_app}. Elle contient une vue SOC, une file d'événements, un module de live scoring, un onglet preuves modèle et un export de note d'incident.
+
+L'interface a été ajoutée pour montrer la couche utilisateur finale. Un modèle MLOps ne doit pas rester invisible dans un terminal : il doit être exploitable par un profil métier. La file analyste permet de filtrer les événements critiques, le live scoring interroge l'API FastAPI et l'onglet Model Evidence rassemble les métriques, la validation et le drift.
+
+\screenshotfigure[0.72\textheight]{16_streamlit_soc_analyst_ui.png}{Vue globale CyberGuard SOC Analyst Workbench.}{fig:streamlit_overview}
+\screenshotfigure[0.62\textheight]{17_streamlit_live_scoring_case_export.png}{Live scoring et export d'incident.}{fig:streamlit_scoring}
+\smallshot{18_streamlit_AnalystQueue.png}{File Analyst Queue.}{fig:streamlit_queue}
+\smallshot{19_streamlit_ModelEvidence.png}{Onglet Model Evidence.}{fig:streamlit_evidence}
+
+\section{Structure du projet}
+\smallshot{20_Vscode_structure.png}{Structure du projet dans VS Code.}{fig:vscode_structure}
+
+\section{Résultats principaux}
+\begin{cyberbox}{Résultat final}
+Le meilleur modèle est \textbf{Gradient Boosting} avec accuracy 0,903, précision 0,962, rappel 0,921, F1-score 0,941 et ROC-AUC 0,956.
+\end{cyberbox}
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des preuves du rendu}
+\label{tab:proofs}
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Exigence} & \textbf{Preuve}\\
+\midrule
+Dataset réel & CICIoT2023, ingestion et validation.\\
+DVC & DAG, metrics show, status.\\
+MLflow & Expériences, run details, registry.\\
+Airflow & DAG success et graph view.\\
+Docker & Docker Desktop et terminal.\\
+API & FastAPI docs et prédiction.\\
+Monitoring & Prometheus targets, Grafana SOC.\\
+Drift & Evidently HTML et résumé JSON.\\
+CI/CD & GitHub Actions success.\\
+UI & Streamlit SOC analyst workbench.\\
+\bottomrule
+\end{tabularx}
+\end{table}

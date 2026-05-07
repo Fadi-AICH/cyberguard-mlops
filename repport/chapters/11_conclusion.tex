@@ -1,0 +1,31 @@
+\chapter{Conclusion}
+
+CyberGuard MLOps démontre une chaîne complète de Machine Learning Operations appliquée à la cybersécurité IoT. Le projet répond aux exigences du sujet et va plus loin avec une interface analyste SOC, un dashboard Grafana avancé, un rapport Evidently, un registre MLflow et une CI/CD fonctionnelle.
+
+\section{Bilan}
+Les points forts sont :
+\begin{itemize}
+  \item dataset réel CICIoT2023 ;
+  \item pipeline DVC reproductible ;
+  \item validation data et Great Expectations ;
+  \item comparaison de plusieurs modèles ;
+  \item tracking et registry MLflow ;
+  \item API FastAPI conteneurisée ;
+  \item monitoring Prometheus/Grafana ;
+  \item Airflow DAG ;
+  \item GitHub Actions ;
+  \item Streamlit SOC UI.
+\end{itemize}
+
+\section{Difficultés}
+Les principales difficultés rencontrées sont :
+\begin{itemize}
+  \item port MLflow 5000 occupé sous Windows, corrigé avec le port 5001 ;
+  \item dashboard Grafana initial trop simple, reconstruit en SOC command center ;
+  \item URL API dans Streamlit Docker, corrigée avec \path{http://api:8000} ;
+  \item besoin de rejouer du trafic pour remplir Grafana ;
+  \item gestion des screenshots et de la compilation LaTeX.
+\end{itemize}
+
+\section{Perspectives}
+Pour aller encore plus loin, on pourrait ajouter Kubernetes, un vrai feature store, une base de feedback analyste, une promotion automatique en registry, des tests de charge et un monitoring de concept drift avec labels de production.

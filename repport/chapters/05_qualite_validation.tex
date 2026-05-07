@@ -1,0 +1,61 @@
+\chapter{Validation, qualité et TDD}
+
+\section{Great Expectations}
+Great Expectations formalise des règles de qualité sur les données : colonnes attendues, types, valeurs admissibles et cohérence globale \cite{great_expectations_validation}. Le projet génère deux artefacts :
+\begin{itemize}
+  \item \path{reports/great_expectations_suite.json} ;
+  \item \path{reports/great_expectations_validation.json}.
+\end{itemize}
+
+\begin{lstlisting}
+.\.venv\Scripts\python.exe -m cyberguard_ml.pipeline.great_expectations_check
+Get-Content .\reports\great_expectations_validation.json
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Résultat Great Expectations}
+\label{tab:ge_result}
+\begin{tabularx}{0.75\linewidth}{@{}lC@{}}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur}\\
+\midrule
+Validation & Réussie\\
+Nombre de lignes & 3 000\\
+Taux d'attaque & 84,33 \%\\
+Erreurs & 0\\
+Avertissements & 0\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Qualité automatique}
+La chaîne qualité vérifie le code avant publication :
+\begin{itemize}
+  \item \tooltag{Black} : formatage ;
+  \item \tooltag{isort} : imports ;
+  \item \tooltag{Ruff} : linting moderne ;
+  \item \tooltag{MyPy} : typage statique ;
+  \item \tooltag{Pytest} : tests unitaires et d'intégration.
+\end{itemize}
+
+\screenshotfigure[0.56\textheight]{05_quality_tests.png}{Tests et contrôles qualité.}{fig:quality_tests}
+
+\section{Commandes qualité}
+\begin{lstlisting}
+.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m black --check src tests dags scripts
+.\.venv\Scripts\python.exe -m isort --check-only src tests dags scripts
+.\.venv\Scripts\python.exe -m ruff check src tests dags scripts
+.\.venv\Scripts\python.exe -m mypy src
+\end{lstlisting}
+
+\section{TDD adapté au ML}
+Les tests ne se limitent pas à vérifier que les fonctions retournent une valeur. Ils vérifient aussi les invariants du pipeline :
+\begin{itemize}
+  \item le dataset validé existe ;
+  \item le modèle peut être chargé ;
+  \item l'API répond ;
+  \item les payloads de prédiction sont corrects ;
+  \item les agrégations de l'interface SOC sont cohérentes.
+\end{itemize}
