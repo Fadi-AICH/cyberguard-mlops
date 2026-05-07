@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "validation_result": {
+    "passed": true,
+    "row_count": 3000,
+    "attack_rate": 0.8433333333333334,
+    "errors": [],
+    "warnings": []
+  },
+  "suite_path": "/opt/airflow/project/reports/great_expectations_suite.json"
+}

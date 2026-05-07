@@ -1,0 +1,28 @@
+{
+  "dataset": "CICIoT2023",
+  "year": 2023,
+  "source": "https://www.unb.ca/cic/datasets/iotdataset-2023.html",
+  "sample_mirror": "https://huggingface.co/datasets/lacg030175/CIC-IoT-2023",
+  "license": "CC BY 4.0 for the Hugging Face mirror; original dataset by CIC/UNB.",
+  "config": {
+    "rows": 3000,
+    "page_size": 100,
+    "offset": 0
+  },
+  "rows": 3000,
+  "class_distribution": {
+    "DDoS": 1002,
+    "Benign": 470,
+    "DoS": 456,
+    "Recon": 427,
+    "Mirai": 364,
+    "Spoofing": 211,
+    "Web-based": 43,
+    "BruteForce": 27
+  },
+  "binary_distribution": {
+    "1": 2530,
+    "0": 470
+  },
+  "note": "Country/server/source_ip fields are deterministic SOC enrichment fields for monitoring visualisation and are not model features."
+}

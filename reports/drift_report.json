@@ -1,0 +1,10 @@
+{
+  "engine": "fallback_relative_mean_shift",
+  "drifted_columns": {
+    "variance": 0.2883
+  },
+  "drift_detected": true,
+  "reference_rows": 2100,
+  "current_rows": 900,
+  "html_report": "/opt/airflow/project/reports/evidently_drift_report.html"
+}

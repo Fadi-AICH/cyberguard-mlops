@@ -1,0 +1,251 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CyberGuard CICIoT2023 SOC Report</title>
+  <style>
+    body { margin: 0; background: #0b1017; color: #e8eef8; font-family: Inter, Segoe UI, Arial, sans-serif; }
+    header { padding: 28px 36px; border-bottom: 1px solid #223047; background: #111827; }
+    h1 { margin: 0; font-size: 30px; }
+    h2 { margin: 0 0 14px; font-size: 18px; color: #93c5fd; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 24px 36px; }
+    .panel { background: #121a26; border: 1px solid #26364f; border-radius: 8px; padding: 18px; box-shadow: 0 10px 28px rgba(0,0,0,.24); }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 20px 36px 0; }
+    .kpi { background: #162033; border: 1px solid #2f4363; border-radius: 8px; padding: 16px; }
+    .label { color: #9ca3af; font-size: 12px; text-transform: uppercase; }
+    .value { font-size: 30px; color: #34d399; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 9px 10px; border-bottom: 1px solid #243044; text-align: left; }
+    th { color: #93c5fd; font-size: 12px; text-transform: uppercase; }
+    .bar { height: 10px; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); border-radius: 999px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CyberGuard CICIoT2023 SOC Report</h1>
+    <p>Offline visualization for report evidence: severity levels, top source countries, attack classes, and country/server flow matrix.</p>
+  </header>
+  <section class="kpis">
+    <div class="kpi"><div class="label">Rows</div><div class="value">3000</div></div>
+    <div class="kpi"><div class="label">Attack Rows</div><div class="value">2530</div></div>
+    <div class="kpi"><div class="label">Countries</div><div class="value">13</div></div>
+    <div class="kpi"><div class="label">Servers</div><div class="value">4</div></div>
+  </section>
+  <main class="grid">
+    <section class="panel"><h2>Severity Levels</h2><table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>severity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>critical</td>
+      <td>1822</td>
+    </tr>
+    <tr>
+      <td>medium</td>
+      <td>427</td>
+    </tr>
+    <tr>
+      <td>high</td>
+      <td>281</td>
+    </tr>
+  </tbody>
+</table><div class="bar"></div></section>
+    <section class="panel"><h2>Top Source Countries</h2><table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>country</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Russia</td>
+      <td>399</td>
+    </tr>
+    <tr>
+      <td>China</td>
+      <td>367</td>
+    </tr>
+    <tr>
+      <td>United States</td>
+      <td>346</td>
+    </tr>
+    <tr>
+      <td>India</td>
+      <td>310</td>
+    </tr>
+    <tr>
+      <td>Brazil</td>
+      <td>269</td>
+    </tr>
+    <tr>
+      <td>Netherlands</td>
+      <td>192</td>
+    </tr>
+    <tr>
+      <td>Germany</td>
+      <td>124</td>
+    </tr>
+    <tr>
+      <td>Japan</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <td>Vietnam</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <td>Turkey</td>
+      <td>108</td>
+    </tr>
+  </tbody>
+</table></section>
+    <section class="panel"><h2>Attack Classes</h2><table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>attack_class</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DDoS</td>
+      <td>1002</td>
+    </tr>
+    <tr>
+      <td>DoS</td>
+      <td>456</td>
+    </tr>
+    <tr>
+      <td>Recon</td>
+      <td>427</td>
+    </tr>
+    <tr>
+      <td>Mirai</td>
+      <td>364</td>
+    </tr>
+    <tr>
+      <td>Spoofing</td>
+      <td>211</td>
+    </tr>
+    <tr>
+      <td>Web-based</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <td>BruteForce</td>
+      <td>27</td>
+    </tr>
+  </tbody>
+</table></section>
+    <section class="panel"><h2>Country / Server Flow Matrix</h2><table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>source_country</th>
+      <th>destination_server</th>
+      <th>severity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Russia</td>
+      <td>iot-dmz-api-04</td>
+      <td>critical</td>
+      <td>168</td>
+    </tr>
+    <tr>
+      <td>Brazil</td>
+      <td>iot-dmz-api-04</td>
+      <td>critical</td>
+      <td>129</td>
+    </tr>
+    <tr>
+      <td>United States</td>
+      <td>camera-vlan-02</td>
+      <td>medium</td>
+      <td>124</td>
+    </tr>
+    <tr>
+      <td>Netherlands</td>
+      <td>camera-vlan-02</td>
+      <td>critical</td>
+      <td>116</td>
+    </tr>
+    <tr>
+      <td>Germany</td>
+      <td>edge-gateway-01</td>
+      <td>critical</td>
+      <td>116</td>
+    </tr>
+    <tr>
+      <td>Japan</td>
+      <td>camera-vlan-02</td>
+      <td>critical</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <td>Vietnam</td>
+      <td>edge-gateway-01</td>
+      <td>medium</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <td>Turkey</td>
+      <td>smart-home-hub-03</td>
+      <td>critical</td>
+      <td>108</td>
+    </tr>
+    <tr>
+      <td>India</td>
+      <td>iot-dmz-api-04</td>
+      <td>medium</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td>China</td>
+      <td>smart-home-hub-03</td>
+      <td>medium</td>
+      <td>94</td>
+    </tr>
+    <tr>
+      <td>Indonesia</td>
+      <td>edge-gateway-01</td>
+      <td>critical</td>
+      <td>91</td>
+    </tr>
+    <tr>
+      <td>South Korea</td>
+      <td>smart-home-hub-03</td>
+      <td>critical</td>
+      <td>86</td>
+    </tr>
+    <tr>
+      <td>Russia</td>
+      <td>smart-home-hub-03</td>
+      <td>critical</td>
+      <td>62</td>
+    </tr>
+    <tr>
+      <td>India</td>
+      <td>iot-dmz-api-04</td>
+      <td>critical</td>
+      <td>58</td>
+    </tr>
+    <tr>
+      <td>China</td>
+      <td>smart-home-hub-03</td>
+      <td>critical</td>
+      <td>56</td>
+    </tr>
+  </tbody>
+</table></section>
+  </main>
+  <footer style="padding: 20px 36px; color: #9ca3af;">Dataset: CICIoT2023, Canadian Institute for Cybersecurity / University of New Brunswick</footer>
+</body>
+</html>
