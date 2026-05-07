@@ -112,11 +112,11 @@ Run the DVC pipeline:
 Start the full local stack:
 
 ```powershell
-docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui
+docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui traffic-replay
 docker compose --profile airflow ps
 ```
 
-Replay CICIoT2023 traffic to populate Prometheus and Grafana:
+The `traffic-replay` container automatically sends CICIoT2023 rows to the API every two minutes, which keeps Prometheus and Grafana populated. To run the replay manually instead:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 500 --sleep 0.02 --timeout 30 --retries 2

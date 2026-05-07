@@ -59,6 +59,27 @@ services:
     depends_on:
       - prometheus
 
+  traffic-replay:
+    build: .
+    container_name: cyberguard-traffic-replay
+    environment:
+      - CYBERGUARD_PROJECT_ROOT=/app
+      - REPLAY_ROWS=240
+      - REPLAY_SLEEP=0.03
+      - REPLAY_INTERVAL=120
+    volumes:
+      - ./data:/app/data:ro
+      - ./scripts:/app/scripts:ro
+    command:
+      [
+        "sh",
+        "-c",
+        "while true; do python /app/scripts/replay_ciciot2023_traffic.py --url http://api:8000/predict --rows $${REPLAY_ROWS} --sleep $${REPLAY_SLEEP} --timeout 30 --retries 3; sleep $${REPLAY_INTERVAL}; done",
+      ]
+    depends_on:
+      api:
+        condition: service_healthy
+
   soc-ui:
     build:
       context: .
