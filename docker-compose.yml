@@ -59,6 +59,22 @@ services:
     depends_on:
       - prometheus
 
+  soc-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: cyberguard-soc-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - CYBERGUARD_PROJECT_ROOT=/app
+    volumes:
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+      - ./reports:/app/reports:ro
+    depends_on:
+      - api
+
   airflow:
     image: apache/airflow:3.0.6-python3.11
     container_name: cyberguard-airflow

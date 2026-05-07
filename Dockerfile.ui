@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    CYBERGUARD_PROJECT_ROOT=/app \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+COPY pyproject.toml requirements.txt ./
+COPY src ./src
+RUN python -m pip install --upgrade pip && python -m pip install ".[ui]"
+
+EXPOSE 8501
+CMD ["streamlit", "run", "src/cyberguard_ml/ui/soc_analyst_app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]

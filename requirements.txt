@@ -1,1 +1,1 @@
--e .[dev,mlops]
+-e .[dev,mlops,ui]

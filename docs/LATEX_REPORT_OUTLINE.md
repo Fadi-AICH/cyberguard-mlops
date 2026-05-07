@@ -37,6 +37,7 @@ Project title: CyberGuard MLOps - Intrusion Detection Platform.
 
 - GitHub Actions pipeline.
 - Dockerized FastAPI service.
+- Streamlit SOC analyst UI for triage, live scoring, and case export.
 - Hybrid inference via local CLI and DVC checkout.
 - Prometheus metrics and Grafana dashboard.
 - Evidently drift report.
@@ -51,7 +52,7 @@ Project title: CyberGuard MLOps - Intrusion Detection Platform.
 
 - What worked.
 - Technical difficulties.
-- Future improvements: real CICIDS2017 ingestion, model registry automation, alert feedback loop, Kubernetes deployment.
+- Future improvements: model registry automation, alert feedback loop, Kubernetes deployment.
 
 ## References
 
@@ -61,4 +62,4 @@ Project title: CyberGuard MLOps - Intrusion Detection Platform.
 - Great Expectations docs.
 - Airflow docs.
 - GitHub Actions docs.
-- KDD/CIC intrusion dataset references.
+- CICIoT2023 dataset references.

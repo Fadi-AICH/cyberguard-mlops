@@ -14,12 +14,13 @@ Build a modern cybersecurity MLOps platform that predicts whether a network flow
 6. **Tracking**: MLflow logs parameters, metrics, artifacts, and model signature when available.
 7. **Registry**: best model artifact is packaged under `models/` and can be registered in MLflow.
 8. **Serving**: FastAPI offers `/predict`, `/batch-predict`, `/health`, and `/metrics`.
-9. **Hybrid Inference**: local CLI loads the packaged model for offline predictions after DVC checkout.
-10. **Monitoring**: Prometheus scrapes API metrics; Grafana visualizes latency, throughput, attack rate, severity distribution, attacker countries, world map, and country/server flows.
-11. **Drift**: Evidently report compares reference vs current windows.
-12. **Orchestration**: Airflow DAG runs validation, training, evaluation, and drift report generation.
-13. **CI/CD**: GitHub Actions runs formatting, linting, type checks, tests, and Docker build.
-14. **Report Evidence**: screenshots and commands are tracked in `docs/WORKLOG.md`.
+9. **SOC Analyst UI**: Streamlit workbench provides triage, maps, flow diagrams, live scoring, evidence review, and incident-note export.
+10. **Hybrid Inference**: local CLI loads the packaged model for offline predictions after DVC checkout.
+11. **Monitoring**: Prometheus scrapes API metrics; Grafana visualizes latency, throughput, attack rate, severity distribution, attacker countries, world map, and country/server flows.
+12. **Drift**: Evidently report compares reference vs current windows.
+13. **Orchestration**: Airflow DAG runs validation, training, evaluation, and drift report generation.
+14. **CI/CD**: GitHub Actions runs formatting, linting, type checks, tests, and Docker build.
+15. **Report Evidence**: screenshots and commands are tracked in `docs/WORKLOG.md`.
 
 ## Research Notes
 

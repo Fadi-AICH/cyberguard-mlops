@@ -10,6 +10,7 @@ Run these once from the activated venv prompt:
 Set-Location -LiteralPath 'C:\Users\fadia\OneDrive\Bureau\Projet ML'
 $env:PYTHONPATH='src'
 .\.venv\Scripts\dvc.exe status
+docker compose --profile airflow up -d mlflow api prometheus grafana airflow soc-ui
 docker compose --profile airflow ps
 .\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 240 --sleep 0.03 --timeout 30 --retries 2
 ```
@@ -118,9 +119,39 @@ Use browser zoom around 90-100% and hide unrelated tabs where possible.
     - Capture repo files and Actions tab.
     - If Actions still show billing/account block, capture that as a documented infrastructure issue, not a project code failure.
 
+16. `screenshots/v2_16_streamlit_soc_analyst_ui.png`
+    - Browser:
+    ```text
+    http://localhost:8501
+    ```
+    - Capture the `SOC Overview` tab with KPIs, severity donut, top attacker countries, world map, and country/server flow diagram visible.
+
+17. `screenshots/v2_17_streamlit_live_scoring_case_export.png`
+    - Browser:
+    ```text
+    http://localhost:8501
+    ```
+    - Open `Analyst Queue`, select a critical/high flow, then open `Live Scoring`, click `Score Selected Flow`.
+    - Capture the prediction JSON or `Case Export` tab showing the generated incident note.
+
 ## Optional Nice Evidence
 
 - Docker Desktop containers page with all `cyberguard-*` services.
 - MLflow run detail page showing params, metrics, and artifacts.
 - `reports/great_expectations_validation.json` opened in VS Code.
 - `models/model_card.json` opened in VS Code.
+
+## SOC Analyst UI Commands
+
+Local mode:
+
+```powershell
+$env:PYTHONPATH='src'
+.\.venv\Scripts\streamlit.exe run src\cyberguard_ml\ui\soc_analyst_app.py --server.port 8501
+```
+
+Docker mode:
+
+```powershell
+docker compose up -d api soc-ui
+```

@@ -461,3 +461,47 @@ Best candidate by F1-score: `gradient_boosting`.
 - Airflow DAG test finished with state `success`.
 - Pushed commit `efc1126` to GitHub. Latest Actions run `#7` started but completed as `failure` before exposing steps, consistent with the account-level Actions/billing runner block seen earlier.
 - Latest Actions URL: `https://github.com/Fadi-AICH/cyberguard-mlops/actions/runs/25472140055`
+
+## 2026-05-07 - Streamlit SOC Analyst UI Upgrade
+
+### Scope
+
+- Added a Streamlit analyst workbench as a real user-facing SOC layer on top of the CICIoT2023 pipeline artifacts.
+- Added reusable analytics helpers under `cyberguard_ml.ui`.
+- Added Docker Compose service `soc-ui` on port `8501`.
+- Added tests for SOC summaries, queue filtering, flow matrix generation, payload creation, and incident-note export.
+
+### UI Capabilities
+
+- Dataset KPIs: validated rows, attack rate, countries, servers, top attack class.
+- SOC overview: severity donut, top source-country ranking, world attack map, country/server flow diagram.
+- Analyst queue: filtered events by country, severity, server, and attack-only mode.
+- Live scoring: selected CICIoT2023 flow is sent to FastAPI `/predict`.
+- Model evidence: model metrics, validation result, drift status, Great Expectations result, model card.
+- Case export: downloadable Markdown incident note and prediction payload.
+
+### Commands
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+$env:PYTHONPATH='src'
+.\.venv\Scripts\streamlit.exe run src\cyberguard_ml\ui\soc_analyst_app.py --server.port 8501
+docker compose up -d api soc-ui
+```
+
+### Verification
+
+- `pytest`: 9 passed.
+- `ruff`: passed.
+- `mypy`: passed.
+- `black --check`: passed.
+- `isort --check-only`: passed.
+- Local Streamlit smoke test returned HTTP `200` at `http://localhost:8501`.
+- Docker Compose config passed.
+- Docker image `projetml-soc-ui` built successfully.
+- Docker `soc-ui` service returned HTTP `200` at `http://localhost:8501`.
+
+### Screenshot Additions
+
+- `screenshots/v2_16_streamlit_soc_analyst_ui.png`
+- `screenshots/v2_17_streamlit_live_scoring_case_export.png`

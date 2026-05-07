@@ -35,8 +35,26 @@ Services:
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000` (`admin` / `admin`)
 - MLflow UI: `http://localhost:5001`
+- SOC Analyst UI: `http://localhost:8501`
 
 The Docker MLflow service uses host port `5001` because Windows may keep a stale local listener on `5000`.
+
+## SOC Analyst UI
+
+The Streamlit SOC workbench is an analyst-facing interface over the same CICIoT2023 artifacts used by the MLOps pipeline. It provides KPI triage, severity distribution, attacker-country ranking, world map, country/server flow diagram, prioritized event queue, live FastAPI scoring, model evidence, drift evidence, and downloadable incident notes.
+
+Run locally:
+
+```powershell
+$env:PYTHONPATH='src'
+.\.venv\Scripts\streamlit.exe run src\cyberguard_ml\ui\soc_analyst_app.py --server.port 8501
+```
+
+Run with Docker Compose:
+
+```powershell
+docker compose up -d api soc-ui
+```
 
 ## Project Theme
 

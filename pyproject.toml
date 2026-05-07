@@ -37,6 +37,10 @@ mlops = [
   "great-expectations>=1.3",
   "evidently>=0.6",
 ]
+ui = [
+  "streamlit>=1.45",
+  "plotly>=5.24",
+]
 airflow = [
   "apache-airflow>=3.0,<4.0",
 ]
