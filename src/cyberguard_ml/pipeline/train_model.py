@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import sys
 from dataclasses import asdict, dataclass
-from typing import Any
+from importlib import import_module
+from typing import Any, cast
 
 import joblib
 import pandas as pd
@@ -114,9 +115,9 @@ def maybe_log_mlflow(results: list[ModelResult], best_model: Pipeline) -> None:
     """Log metrics and model artifacts to MLflow when it is installed."""
 
     try:
-        import mlflow.sklearn
-
         import mlflow
+
+        mlflow_sklearn = cast(Any, import_module("mlflow.sklearn"))
     except Exception:
         return
 
@@ -134,7 +135,7 @@ def maybe_log_mlflow(results: list[ModelResult], best_model: Pipeline) -> None:
                 mlflow.log_metric(f"{prefix}_recall", result.recall)
                 mlflow.log_metric(f"{prefix}_f1", result.f1)
                 mlflow.log_metric(f"{prefix}_roc_auc", result.roc_auc)
-            model_info = mlflow.sklearn.log_model(
+            model_info = mlflow_sklearn.log_model(
                 best_model,
                 name="cyberguard_model",
                 registered_model_name="CyberGuard-CICIoT2023-Intrusion-Detector",
