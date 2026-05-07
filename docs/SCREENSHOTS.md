@@ -11,7 +11,7 @@ Set-Location -LiteralPath 'C:\Users\fadia\OneDrive\Bureau\Projet ML'
 $env:PYTHONPATH='src'
 .\.venv\Scripts\dvc.exe status
 docker compose --profile airflow ps
-.\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 240 --sleep 0.03
+.\.venv\Scripts\python.exe scripts\replay_ciciot2023_traffic.py --rows 240 --sleep 0.03 --timeout 30 --retries 2
 ```
 
 Use browser zoom around 90-100% and hide unrelated tabs where possible.
